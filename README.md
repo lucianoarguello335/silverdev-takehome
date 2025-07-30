@@ -1,37 +1,232 @@
-# QA Automation Challenge
+# Instructions to run script
 
-## Introduction
+## Prerequisites Check
 
-This challenge is designed to evaluate candidate’s practical understanding of scripting, databases, and monitoring.
+Note: These instructions are meant for MacOS. For **Windows or Linux** instructions check: [https://www.ruby-lang.org/en/documentation/installation/](https://www.ruby-lang.org/en/documentation/installation/)
 
-We have an API at https://qa-challenge-nine.vercel.app/api/name-checker that processes names.
+First, verify your system has the required tools:
 
-This API endpoint has two issues you are expected to find and fix.
+```bash
+# Check Ruby version (should be 2.6+)
+ruby --version
 
-### Uptime
+# Check if Homebrew is installed (for macOS package management)
+brew --version
 
-You are expected to find out what the actual service uptime is as expressed in time (% of time service returns 200) or requests (% of requests that return 200).
-To do this, you are expected to build a continuously monitoring script.
-In this script, you must log each request into the SQlite database in this project.
+# Check if Git is installed
+git --version
 
-Second, you are expected to write a second script that reads from this database, calculates the service uptime, and outputs it to the console.
+```
 
-Tip: You can accurately detect uptime by monitoring for 10 minutes with >1 req/s.
+## Step 1: Install Ruby (if not already installed)
 
-### The Bug
+If Ruby is not installed or is an older version:
 
-There is a bug in this application about the format of names. The API will return a specific error when this happens - you are expected to find out the pattern of this error.
+```bash
+# Install Homebrew if not present
+/bin/bash -c "$(curl -fsSL <https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh>)"
 
-## Deliverable
-Create a private fork of this repository and send it over to @conanbatt for review.
-Please commit the request_logs database as you store data on it.
+# Install Ruby using Homebrew
+brew install ruby
 
-You are expected to deliver a reproducible case of the bug, as well as a well-defined uptime number in your deliverable. 
+# Add Ruby to your PATH (add this to your ~/.zshrc or ~/.bash_profile)
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
 
-### Tips & Tricks
+```
 
-- It's very important to give your best on this challenge. Please check the [Takehome Guide](https://docs.silver.dev/interview-ready/technical-fundamentals/guia-de-takehomes) to understand what makes an exceptional takehome.
-- Bonus points for doing this in Ruby (even if it’s not your main language). Otherwise, python or Javascript is preferred.
-- The Bug is not contrived - it does not require lateral thinking.
-- You are welcome to use tooling like Postman, but the deliverable must includes scripts that executre requests and read from the database.
-- Any questions about the challenge, please ask at gabriel@silver.dev.
+## Step 2: Clone the Repository
+
+```bash
+# Navigate to your desired directory, like:
+cd ~/Desktop
+
+# Clone the repository
+git clone <https://github.com/lucianoarguello335/silverdev-takehome.git>
+
+# Navigate into the project directory
+cd silverdev-takehome
+
+```
+
+## Step 3: Install Dependencies
+
+```bash
+# Install Bundler (Ruby package manager)
+gem install bundler
+
+# Install project dependencies using Bundler
+bundle install
+
+```
+
+**Alternative method (if Bundler fails):**
+
+```bash
+# Install gems manually
+gem install http sqlite3
+
+```
+
+## Step 4: Verify Installation
+
+```bash
+# Check if all required gems are installed
+ruby -e "require 'http'; require 'sqlite3'; puts 'All dependencies installed successfully!'"
+
+```
+
+## Step 5: Run the API Monitoring Script
+
+### Basic Usage (10 minutes monitoring):
+
+```bash
+ruby ApiCheck.rb
+
+```
+
+### Custom Parameters:
+
+```bash
+# Monitor for 5 minutes with 2-second intervals
+ruby ApiCheck.rb --duration 300 --interval 2
+
+# Use custom name parameter
+ruby ApiCheck.rb --name "Jane Smith"
+
+# Use custom URL (if needed)
+ruby ApiCheck.rb --url "<https://qa-challenge-nine.vercel.app/api/name-checker>" --name "Test User"
+
+# View all available options
+ruby ApiCheck.rb --help
+
+```
+
+## Expected Output
+
+The script will show:
+
+- Real-time monitoring logs
+- Request status and response times
+- Final summary with success rate
+- Database logging of all requests
+- Example output in terminal:
+    
+    ![image.png](Instructions%20to%20run%20script%2023f4a850f6f4804f85f9e0b49ca77335/image.png)
+    
+- Example “request_logs.db” database after running script:
+    
+    ![image.png](Instructions%20to%20run%20script%2023f4a850f6f4804f85f9e0b49ca77335/image%201.png)
+    
+
+## Common Errors and Solutions
+
+### 1. Ruby Version Issues
+
+**Error:** `ruby: command not found`**Solution:**
+
+```bash
+brew install ruby
+echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+
+```
+
+### 2. Gem Installation Failures
+
+**Error:** `ERROR: Failed to build gem native extension`**Solution:**
+
+```bash
+# Install Xcode command line tools
+xcode-select --install
+
+# Try installing gems again
+gem install http sqlite3
+
+```
+
+### 3. Permission Issues
+
+**Error:** `Permission denied` or `You don't have write permissions`**Solution:**
+
+```bash
+# Use rbenv or rvm for Ruby version management
+brew install rbenv
+rbenv init
+echo 'eval "$(rbenv init -)"' >> ~/.zshrc
+source ~/.zshrc
+rbenv install 3.2.0
+rbenv global 3.2.0
+
+```
+
+### 4. Network/SSL Issues
+
+**Error:** `SSL_connect returned=1 errno=0 state=error`**Solution:**
+
+```bash
+# Update certificates
+brew install openssl
+gem install bundler -- --with-openssl-dir=$(brew --prefix openssl)
+
+```
+
+### 5. Database Lock Issues
+
+**Error:** `database is locked`**Solution:**
+
+```bash
+# Remove existing database and restart
+rm request_logs.db
+ruby ApiCheck.rb
+
+```
+
+### 6. HTTP Timeout Issues
+
+**Error:** `HTTP::TimeoutError`**Solution:**
+
+```bash
+# Increase timeout or check network connection
+ruby ApiCheck.rb --interval 2
+
+```
+
+## Troubleshooting Commands
+
+```bash
+# Check Ruby environment
+which ruby
+ruby --version
+gem env
+
+# Check installed gems
+gem list
+
+# Check database file
+ls -la request_logs.db
+
+# Test database connection
+ruby -e "require 'sqlite3'; db = SQLite3::Database.new('request_logs.db'); puts 'Database OK'"
+
+# Test HTTP connectivity
+curl -X POST <https://qa-challenge-nine.vercel.app/api/name-checker> \\
+  -H "Content-Type: application/json" \\
+  -d '{"name": "Test User"}'
+
+```
+
+## Quick Test Run
+
+For a quick test (1 minute monitoring):
+
+```bash
+ruby ApiCheck.rb --duration 60 --interval 1
+
+```
+
+This will run the script for 1 minute, making 60 requests to verify everything is working correctly.
+
+---
+
+**Note:** The script will create a `request_logs.db` SQLite database file that stores all request data.
