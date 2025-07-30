@@ -1,3 +1,18 @@
+## ❌ BUG FOUND ❌
+A bug was found that after 7 successful requests, the next request fails with a STATUS 500. 
+To reproduce:
+1. Make a 1 call per second to the name API https://qa-challenge-nine.vercel.app/api/name-checker using any payload like: {  "name": "John" }
+2. After the seventh call, check response message and code.
+<img width="874" height="668" alt="terminal" src="https://github.com/user-attachments/assets/e9abdbe8-cdd5-4fa9-bcae-8a9da84a71e7" />
+
+
+#### Expected: Call is successful.
+#### Actual: Response 500 and failure message.
+
+### The following summary shows the response performance and metrics after the scripts finishes (default: 10 minutes):
+<img width="543" height="240" alt="Summary" src="https://github.com/user-attachments/assets/c598a67f-9d06-41f1-a992-5a2994ca3dd1" />
+
+
 # Instructions to run script
 
 ## Prerequisites Check
