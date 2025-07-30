@@ -110,13 +110,16 @@ The script will show:
 - Request status and response times
 - Final summary with success rate
 - Database logging of all requests
+  
 - Example output in terminal:
+    <img width="874" height="668" alt="terminal" src="https://github.com/user-attachments/assets/501b87a4-9a3c-4e85-98fa-6b31fb372f90" />
+
     
-    ![image.png](Instructions%20to%20run%20script%2023f4a850f6f4804f85f9e0b49ca77335/image.png)
-    
+
 - Example “request_logs.db” database after running script:
     
-    ![image.png](Instructions%20to%20run%20script%2023f4a850f6f4804f85f9e0b49ca77335/image%201.png)
+    <img width="1457" height="793" alt="db" src="https://github.com/user-attachments/assets/9468f296-06e7-465a-a7f1-485e140143b8" />
+
     
 
 ## Common Errors and Solutions
